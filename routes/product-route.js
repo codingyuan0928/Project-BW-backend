@@ -41,7 +41,7 @@ router.get("/:category?", async (req, res) => {
     res.status(500).json({ success: false, message: err });
   }
 });
-//買家查詢所有商品
+//賣家查詢所有商品
 router.get("/shop/:shopname", async (req, res) => {
   const { shopname } = req.params;
   try {
@@ -49,7 +49,7 @@ router.get("/shop/:shopname", async (req, res) => {
     res.status(200).json({ data: products });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({ success: false, message: error });
   }
 });
 //查詢商品透過名稱
