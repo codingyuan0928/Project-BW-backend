@@ -61,7 +61,6 @@ const productSchema = new mongoose.Schema({
   ],
   shopname: {
     type: String,
-    unique: true,
     required: true,
   },
   sold: {

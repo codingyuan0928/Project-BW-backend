@@ -35,29 +35,29 @@ const loginValidation = (data) => {
 //product validation
 const productValidation = (data) => {
   const schema = Joi.object({
-    imgUrl: Joi.string().required(),
     title: Joi.string().min(6).max(50).required(),
     categories: Joi.string()
       .valid(
-        "優惠&精選",
+        "精選",
         "雜貨",
+        "服飾",
         "電子產品",
         "電子遊戲",
-        "家俱&家電",
+        "家俱",
         "玩具",
         "嬰兒",
-        "汽車&輪胎",
+        "汽車",
         "電影",
         "書籍",
-        "藥物&健康",
+        "健康",
         "個人護理",
         "美妝",
         "寵物",
-        "家務&居家",
-        "運動&戶外",
-        "學校&辦公",
-        "派對&節慶",
-        "藝術&音樂",
+        "家庭用品",
+        "運動",
+        "辦公",
+        "慶祝",
+        "藝術",
         "禮品",
         "其他"
       )
@@ -71,8 +71,8 @@ const productValidation = (data) => {
         quantity: Joi.number().min(0).required().allow(null),
       })
     ),
+    shopname: Joi.string().min(6).max(50).required(),
   }).options({ stripUnknown: true }); // 忽略未知的屬性;
-  shopname: Joi.string().min(6).max(50).required();
   return schema.validate(data);
 };
 //cart validation

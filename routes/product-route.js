@@ -1,7 +1,9 @@
 const router = require("express").Router();
+const multer = require("multer");
 const Product = require("../models").productModel;
 const productValidation = require("../validation").productValidation;
-
+const uploadAndGenerateUrl = require("../middleware/uploadAndGenerateUrl");
+const upload = multer({ dest: "uploads/" });
 router.use((req, res, next) => {
   console.log("A request is coming into API....");
   next();
@@ -75,32 +77,41 @@ router.get("/findByName/:name", async (req, res) => {
   }
 });
 //新增商品(賣家)
-router.post("/", async (req, res) => {
-  //validate the inputs before building a new product
-  const { error } = productValidation(req.body);
-  if (error) {
-    res.status(400).send(error.details[0].message);
-    return;
+router.post(
+  "/",
+  upload.single("file"),
+  (req, res, next) => {
+    console.log(req.file, req.body);
+    next();
+  },
+  uploadAndGenerateUrl,
+  async (req, res) => {
+    //validate the inputs before building a new product
+    const imgUrl = req.uploadedUrl;
+    const { error } = productValidation(req.body);
+    if (error) {
+      res.status(400).send(error.details[0].message);
+      return;
+    }
+    try {
+      const newProduct = new Product({
+        imgUrl,
+        title: req.body.title,
+        categories: req.body.categories,
+        description: req.body.description,
+        inventory: req.body.inventory,
+        price: req.body.price,
+        buyers: req.body.buyers,
+        shopname: req.body.shopname,
+      });
+      await newProduct.save();
+      res.status(200).send("New product has been saved");
+    } catch (err) {
+      console.log(err);
+      res.status(400).send("Cannot save product");
+    }
   }
-  const newProduct = new Product({
-    imgUrl: req.body.imgUrl,
-    title: req.body.title,
-    categories: req.body.categories,
-    description: req.body.description,
-    inventory: req.body.inventory,
-    price: req.body.price,
-    buyers: req.body.buyers,
-    shopname: req.body.shopname,
-  });
-
-  try {
-    await newProduct.save();
-    res.status(200).send("New product has been saved");
-  } catch (err) {
-    console.log(err);
-    res.status(400).send("Cannot save product");
-  }
-});
+);
 
 //購買物品(買家)
 router.post("/purchase/:productId", async (req, res) => {
