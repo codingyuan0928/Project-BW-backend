@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-// const db = mongoose.connection.useDb("BW");
 const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
